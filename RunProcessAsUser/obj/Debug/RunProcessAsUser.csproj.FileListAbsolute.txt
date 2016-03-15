@@ -1,0 +1,10 @@
+c:\users\greenhouse\documents\visual studio 2013\Projects\RunProcessAsUser\RunProcessAsUser\bin\Debug\RunProcessAsUser.exe.config
+c:\Users\greenhouse\Documents\Visual Studio 2013\Projects\RunProcessAsUser\RunProcessAsUser\bin\Debug\RunProcessAsUser.exe
+c:\Users\greenhouse\Documents\Visual Studio 2013\Projects\RunProcessAsUser\RunProcessAsUser\bin\Debug\RunProcessAsUser.pdb
+c:\Users\greenhouse\Documents\Visual Studio 2013\Projects\RunProcessAsUser\RunProcessAsUser\obj\Debug\RunProcessAsUser.exe
+c:\Users\greenhouse\Documents\Visual Studio 2013\Projects\RunProcessAsUser\RunProcessAsUser\obj\Debug\RunProcessAsUser.pdb
+C:\RunProcessAsUser\RunProcessAsUser\bin\Debug\RunProcessAsUser.exe.config
+C:\RunProcessAsUser\RunProcessAsUser\obj\Debug\RunProcessAsUser.exe
+C:\RunProcessAsUser\RunProcessAsUser\obj\Debug\RunProcessAsUser.pdb
+C:\RunProcessAsUser\RunProcessAsUser\bin\Debug\RunProcessAsUser.exe
+C:\RunProcessAsUser\RunProcessAsUser\bin\Debug\RunProcessAsUser.pdb
