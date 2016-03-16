@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
@@ -184,11 +186,15 @@ namespace pipe_cs
             ret = WaitForSingleObject(pi.hProcess, 100000);
             Console.Write("WaitForSingleObject returned " + ret);
             //ret==258 (0x102) - not signalled, ret==0 ok!
-            byte[] buffer = new byte[2048];
 
-            ret = Read(buffer, 0, buffer.Length, hReadOut);
-            String outs = Encoding.ASCII.GetString(buffer, 0, ret);
-            Console.Write(outs);
+            //si.hStdOutput.Close();
+            var stdOutputEncoding = Console.OutputEncoding;
+            var standardOutput = new StreamReader(new FileStream(hReadOut, FileAccess.Read, 0x1000, false), stdOutputEncoding, true, 0x1000);
+            //byte[] buffer = new byte[2048];
+
+            //ret = Read(buffer, 0, buffer.Length, hReadOut);
+            //String outs = Encoding.ASCII.GetString(buffer, 0, ret);
+            Console.Write(standardOutput.ReadToEnd());
         }
 
     }
