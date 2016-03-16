@@ -11,8 +11,8 @@ namespace RunProcessAsUser
     {
         static void Main(string[] args)
         {
-            //CreateProcessSample.Win32.CreateProcessAsUserWrapper("ping -t 127.0.0.1", ".", "foobar", "foobar");
-            pipe_cs.Program.RunPing();
+            CreateProcessSample.Win32.CreateProcessAsUserWrapper("ping 127.0.0.1", ".", "foobar", "foobar");
+            //pipe_cs.Program.RunPing();
         }
     }
 }

@@ -167,7 +167,7 @@ namespace pipe_cs
             //Create the child process
 
             bret = CreateProcess("C:\\WINDOWS\\SYSTEM32\\PING.EXE", //
-            "PING.EXE 127.0.0.1", //null, 
+            "PING.EXE -n 20 127.0.0.1", //null, 
             IntPtr.Zero,
             IntPtr.Zero,
             true,
@@ -176,6 +176,7 @@ namespace pipe_cs
             null,
             ref si,
             out pi);
+            si.hStdOutput.Close();
 
             if (bret == false)
             {
@@ -187,7 +188,6 @@ namespace pipe_cs
             Console.Write("WaitForSingleObject returned " + ret);
             //ret==258 (0x102) - not signalled, ret==0 ok!
 
-            //si.hStdOutput.Close();
             var stdOutputEncoding = Console.OutputEncoding;
             var standardOutput = new StreamReader(new FileStream(hReadOut, FileAccess.Read, 0x1000, false), stdOutputEncoding, true, 0x1000);
             //byte[] buffer = new byte[2048];
