@@ -148,7 +148,7 @@ namespace CreateProcessSample
         public static extern Boolean CloseHandle (IntPtr handle);
 
         [DllImport("kernel32.dll")]
-        static extern bool CreatePipe(out SafeFileHandle phReadPipe, out SafeFileHandle phWritePipe, IntPtr lpPipeAttributes, uint nSize);
+        static extern bool CreatePipe(out SafeFileHandle phReadPipe, out SafeFileHandle phWritePipe, ref SECURITY_ATTRIBUTES lpPipeAttributes, uint nSize);
 
         [DllImport("kernel32.dll")]
         static extern bool SetHandleInformation(SafeFileHandle hObject, int dwMask, uint dwFlags);
@@ -157,7 +157,7 @@ namespace CreateProcessSample
 
         #region "FUNCTIONS"
 
-        public static void CreateProcessAsUserWrapper(string strCommand, string strDomain, string strName, string strPassword)
+        public static void CreateProcessAsUserWrapper(string command, string domain, string username, string password)
         {
             // Variables
             PROCESS_INFORMATION processInfo = new PROCESS_INFORMATION();
@@ -166,23 +166,20 @@ namespace CreateProcessSample
             IntPtr hToken = IntPtr.Zero;
             UInt32 uiResultWait = WAIT_FAILED;
             SafeFileHandle hReadIn, hReadOut, hWriteIn, hWriteOut;
-            bool bret;
 
-            SECURITY_ATTRIBUTES saAttr = new SECURITY_ATTRIBUTES();
-            saAttr.bInheritHandle = true;
+            SECURITY_ATTRIBUTES securityAttributes = new SECURITY_ATTRIBUTES();
+            securityAttributes.bInheritHandle = true;
 
-            IntPtr mypointer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(pipe_cs.STARTUPINFO)));
-            Marshal.StructureToPtr(saAttr, mypointer, true);
-            bret = CreatePipe(out hReadOut, out hWriteOut, mypointer, 0);
+            CreatePipe(out hReadOut, out hWriteOut, ref securityAttributes, 0);
             SetHandleInformation(hReadOut, HANDLE_FLAG_INHERIT, 0);
 
             try
             {
                 // Logon user
                 bResult = Win32.LogonUser(
-                    strName,
-                    strDomain,
-                    strPassword,
+                    username,
+                    domain,
+                    password,
                     Win32.LogonType.LOGON32_LOGON_INTERACTIVE,
                     Win32.LogonProvider.LOGON32_PROVIDER_DEFAULT,
                     out hToken
@@ -191,15 +188,13 @@ namespace CreateProcessSample
 
                 // Create process
                 startInfo.cb = Marshal.SizeOf(startInfo);
-                startInfo.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
-                //startInfo.lpDesktop = "winsta0\\default";
-                startInfo.wShowWindow = SW_HIDE; // SW_HIDE; //SW_SHOW
+                startInfo.dwFlags = STARTF_USESTDHANDLES;
                 startInfo.hStdOutput = hWriteOut;
 
                 bResult = Win32.CreateProcessAsUser(
                     hToken,
                     null,
-                    strCommand,
+                    command,
                     IntPtr.Zero,
                     IntPtr.Zero,
                     true,
@@ -217,8 +212,9 @@ namespace CreateProcessSample
                 uiResultWait = WaitForSingleObject(processInfo.hProcess, INFINITE);
                 if (uiResultWait == WAIT_FAILED) { throw new Exception("WaitForSingleObject error #" + Marshal.GetLastWin32Error()); }
 
-                var standardOutput = new StreamReader(new FileStream(hReadOut, FileAccess.Read, 0x1000, false), Console.OutputEncoding, true, 0x1000);
-                Console.WriteLine(standardOutput.ReadToEnd());
+                const int bufferSize = 0x1000;
+                var standardOutput = new StreamReader(new FileStream(hReadOut, FileAccess.Read, bufferSize, false), Console.OutputEncoding, true, bufferSize);
+                Console.WriteLine("GOT STDOUT: ``{0}``", standardOutput.ReadToEnd());
 
             }
             finally
