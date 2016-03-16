@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using Microsoft.Win32.SafeHandles;
 
 namespace pipe_cs
 {
@@ -32,9 +33,9 @@ namespace pipe_cs
         public short wShowWindow;
         public short cbReserved2;
         public IntPtr lpReserved2;
-        public IntPtr hStdInput;
-        public IntPtr hStdOutput;
-        public IntPtr hStdError;
+        public SafeFileHandle hStdInput;
+        public SafeFileHandle hStdOutput;
+        public SafeFileHandle hStdError;
     }
 
     public struct SECURITY_ATTRIBUTES
@@ -54,10 +55,10 @@ namespace pipe_cs
         [DllImport("kernel32.dll")]
         static extern int GetExitCodeProcess(int hProcess, ref int lpExitCode);
         [DllImport("kernel32.dll")]
-        static extern bool CreatePipe(out IntPtr phReadPipe, out IntPtr phWritePipe, IntPtr lpPipeAttributes, uint nSize);
+        static extern bool CreatePipe(out SafeFileHandle phReadPipe, out SafeFileHandle phWritePipe, IntPtr lpPipeAttributes, uint nSize);
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern unsafe bool ReadFile(
-        IntPtr hfile,
+        SafeFileHandle hfile,
         void* pBuffer,
         int NumberOfBytesToRead,
         int* pNumberOfBytesRead,
@@ -79,7 +80,7 @@ namespace pipe_cs
         [DllImport("kernel32.dll")]
         static extern bool SetStdHandle(int nStdHandle, IntPtr hHandle);
         [DllImport("kernel32.dll")]
-        static extern bool SetHandleInformation(IntPtr hObject, int dwMask, uint dwFlags);
+        static extern bool SetHandleInformation(SafeFileHandle hObject, int dwMask, uint dwFlags);
         [DllImport("kernel32", SetLastError = true)]
         static extern IntPtr CreateFile(string filename,
         uint desiredAccess,
@@ -89,7 +90,7 @@ namespace pipe_cs
         uint flagsAndAttributes,
         IntPtr templateFile);
 
-        public static unsafe int Read(byte[] buffer, int index, int count, IntPtr hStdOut)
+        public static unsafe int Read(byte[] buffer, int index, int count, SafeFileHandle hStdOut)
         {
             int n = 0;
             fixed (byte* p = buffer)
@@ -123,7 +124,7 @@ namespace pipe_cs
             STARTUPINFO si;
             SECURITY_ATTRIBUTES saAttr = new SECURITY_ATTRIBUTES();
             PROCESS_INFORMATION pi;
-            IntPtr hReadIn, hReadOut, hWriteIn, hWriteOut;
+            SafeFileHandle hReadIn, hReadOut, hWriteIn, hWriteOut;
             IntPtr hStdout;
             IntPtr hInputFile;
 
@@ -164,7 +165,7 @@ namespace pipe_cs
             //Create the child process
 
             bret = CreateProcess("C:\\WINDOWS\\SYSTEM32\\PING.EXE", //
-            "PING.EXE 192.168.0.1", //null, 
+            "PING.EXE 127.0.0.1", //null, 
             IntPtr.Zero,
             IntPtr.Zero,
             true,
