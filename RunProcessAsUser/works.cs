@@ -1,4 +1,5 @@
-﻿using System;
+﻿// https://blogs.msdn.microsoft.com/alejacma/2007/12/20/how-to-call-createprocesswithlogonw-createprocessasuser-in-net/
+using System;
 
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
