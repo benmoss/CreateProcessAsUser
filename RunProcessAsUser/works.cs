@@ -100,13 +100,13 @@ namespace CreateProcessSample
             String lpszPassword,
             LogonType dwLogonType,
             LogonProvider dwLogonProvider,
-            out IntPtr phToken
+            out SafeFileHandle phToken
         );
 
         [DllImport("advapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern Boolean CreateProcessAsUser
         (
-            IntPtr hToken,
+            SafeFileHandle hToken,
             String lpApplicationName,
             String lpCommandLine,
             IntPtr lpProcessAttributes,
@@ -163,9 +163,8 @@ namespace CreateProcessSample
             PROCESS_INFORMATION processInfo = new PROCESS_INFORMATION();
             STARTUPINFO startInfo = new STARTUPINFO();
             Boolean bResult = false;
-            IntPtr hToken = IntPtr.Zero;
             UInt32 uiResultWait = WAIT_FAILED;
-            SafeFileHandle hReadIn, hReadOut, hWriteIn, hWriteOut;
+            SafeFileHandle hToken, hReadIn, hReadOut, hWriteIn, hWriteOut;
 
             SECURITY_ATTRIBUTES securityAttributes = new SECURITY_ATTRIBUTES();
             securityAttributes.bInheritHandle = true;
@@ -173,8 +172,6 @@ namespace CreateProcessSample
             CreatePipe(out hReadOut, out hWriteOut, ref securityAttributes, 0);
             SetHandleInformation(hReadOut, HANDLE_FLAG_INHERIT, 0);
 
-            try
-            {
                 // Logon user
                 bResult = Win32.LogonUser(
                     username,
@@ -216,14 +213,11 @@ namespace CreateProcessSample
                 var standardOutput = new StreamReader(new FileStream(hReadOut, FileAccess.Read, bufferSize, false), Console.OutputEncoding, true, bufferSize);
                 Console.WriteLine("GOT STDOUT: ``{0}``", standardOutput.ReadToEnd());
 
-            }
-            finally
-            {
                 // Close all handles
-                CloseHandle(hToken);
+                hToken.Close();
+                hReadOut.Close();
                 CloseHandle(processInfo.hProcess);
                 CloseHandle(processInfo.hThread);
-            }
         }
         #endregion
     }
