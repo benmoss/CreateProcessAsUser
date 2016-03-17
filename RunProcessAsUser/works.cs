@@ -177,7 +177,7 @@ namespace CreateProcessSample
                     username,
                     domain,
                     password,
-                    Win32.LogonType.LOGON32_LOGON_INTERACTIVE,
+                    Win32.LogonType.LOGON32_LOGON_BATCH,
                     Win32.LogonProvider.LOGON32_PROVIDER_DEFAULT,
                     out hToken
                 );
@@ -205,13 +205,14 @@ namespace CreateProcessSample
                 startInfo.hStdOutput.Close();
                 if (!bResult) { throw new Exception("CreateProcessAsUser error #" + Marshal.GetLastWin32Error()); }
 
+                var standardOutput = new StreamReader(new FileStream(hReadOut, FileAccess.Read), Console.OutputEncoding);
+                while (!standardOutput.EndOfStream)
+                {
+                    Console.WriteLine("GOT STDOUT: ``{0}``", standardOutput.ReadLine());
+                }
                 // Wait for process to end
                 uiResultWait = WaitForSingleObject(processInfo.hProcess, INFINITE);
                 if (uiResultWait == WAIT_FAILED) { throw new Exception("WaitForSingleObject error #" + Marshal.GetLastWin32Error()); }
-
-                const int bufferSize = 0x1000;
-                var standardOutput = new StreamReader(new FileStream(hReadOut, FileAccess.Read, bufferSize, false), Console.OutputEncoding, true, bufferSize);
-                Console.WriteLine("GOT STDOUT: ``{0}``", standardOutput.ReadToEnd());
 
                 // Close all handles
                 hToken.Close();
