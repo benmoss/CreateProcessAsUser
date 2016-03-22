@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -11,12 +12,13 @@ namespace RunProcessAsUser
     {
         static void Main(string[] args)
         {
-            while (true)
-            {
-                Console.ReadLine();
-                CreateProcessSample.Win32.CreateProcessAsUserWrapper("ping 127.0.0.1", ".", "foobar", "foobar");
-            }
-            //pipe_cs.Program.RunPing();
+            var process = new ImpersonationProcess();
+
+            process.Start("foobar", "foobar", ".");
+
+            Console.WriteLine("output: {0}", process.StandardOutput.ReadToEnd());
+
+            Console.ReadLine();
         }
     }
 }

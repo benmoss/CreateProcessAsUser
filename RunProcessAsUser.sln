@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunProcessAsUser", "RunProcessAsUser\RunProcessAsUser.csproj", "{40CA7F59-4FCB-4C92-B96B-2DD0FF6239FA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{94E038D3-152E-4E0E-B21D-8B1109460F0D} = {94E038D3-152E-4E0E-B21D-8B1109460F0D}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "createjobobject", "createjobobject\createjobobject.csproj", "{94E038D3-152E-4E0E-B21D-8B1109460F0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +20,10 @@ Global
 		{40CA7F59-4FCB-4C92-B96B-2DD0FF6239FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40CA7F59-4FCB-4C92-B96B-2DD0FF6239FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40CA7F59-4FCB-4C92-B96B-2DD0FF6239FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94E038D3-152E-4E0E-B21D-8B1109460F0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94E038D3-152E-4E0E-B21D-8B1109460F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94E038D3-152E-4E0E-B21D-8B1109460F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94E038D3-152E-4E0E-B21D-8B1109460F0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
