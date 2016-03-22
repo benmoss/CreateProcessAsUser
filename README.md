@@ -7,3 +7,5 @@ We are exploring this syscall because the syscall used by C#'s `Process` class i
 In order to run the `CreateProcessAsUser` syscall, you must grant the current user the privilege to "Replace a process level token". The `SYSTEM` user has this by default.
 
 In order to run this project, create a user named `foobar` with the password `foobar` and add it to the `IIS_IUSRS` group. This will allow it to logon locally.
+
+When run with an Administrator user with the "Replace a process level token" privilege, we see the subprocess crash with `ERROR_ACCESS_DENIED 5 (0x5)` when executing the `CreateJobObject` syscall. If we remove the syscall this program works fine.
